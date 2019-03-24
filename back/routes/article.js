@@ -1,9 +1,10 @@
 const {ErrorFormatter, getError} = require("../lib/error");
-const CONST = require("../const");
+const CONST = require("../const").APP_CONST;
 const {validLimit, validPage} = require("../lib/validNumber");
 const Article = require('../models/article');
+const HTTP_CODE = CONST.HTTP_CODE;
 
-exports.post = function (req, res) {
+exports.post = (req, res) =>{
   const {title, body} = req.body;
 
   const article = new Article({title, body});
@@ -11,38 +12,38 @@ exports.post = function (req, res) {
     .then(data => res.send(201, data))
     .catch(err => {
       if (err.name === 'ValidationError') {
-        res.status(422).json(ErrorFormatter(err));
+        res.status(HTTP_CODE.UNPROCESSABLE_INTITY).json(ErrorFormatter(err));
       } else {
-        res.status(500).json(err);
+        res.status(HTTP_CODE.SERVER_ERROR).json(err);
       }
     });
 };
 
-exports.put = function (req, res) {
+exports.put = (req, res) => {
   const {id} = req.params;
   const {title, body} = req.body;
 
   Article.findById(id)
     .then(article => {
       Article.findOneAndUpdate({_id: article._id}, {title, body}, { new: true, runValidators: true })
-        .then(data => res.send(201, data))
+        .then(data => res.send(HTTP_CODE.OK, data))
         .catch(err => {
           if (err.name === 'ValidationError') {
-            res.status(422).json(ErrorFormatter(err));
+            res.status(HTTP_CODE.UNPROCESSABLE_INTITY).json(ErrorFormatter(err));
           } else {
-            res.status(500).json(err);
+            res.status(HTTP_CODE.SERVER_ERROR).json(err);
           }
         });
     })
-    .catch(err => res.send(404, [{errors: {field: "id", error: "not found"}}]));
+    .catch(err => res.send(HTTP_CODE.NOT_FOUND, [{errors: {field: "id", error: "not found"}}]));
 };
 
-exports.getOne = function (req, res) {
+exports.getOne = (req, res) => {
   const {id} = req.params;
 
   Article.findById(id)
-    .then(data => res.send(200, data))
-    .catch(err => res.send(404, ErrorFormatter(err)));
+    .then(data => res.send(HTTP_CODE.OK, data))
+    .catch(err => res.send(HTTP_CODE.NOT_FOUND, ErrorFormatter(err)));
 };
 
 exports.getAll = async function (req, res) {
@@ -61,25 +62,25 @@ exports.getAll = async function (req, res) {
   }
 
   if (Object.keys(objErrors.errors).length > 0) {
-    return res.status(422).json(ErrorFormatter(objErrors));
+    return res.status(HTTP_CODE.UNPROCESSABLE_INTITY).json(ErrorFormatter(objErrors));
   }
 
-  Article.count({}, function (err, date) {
+  Article.count({}, (err, date) => {
     const count = date;
-    const countPage = Math.ceil(count / CONST.APP_CONST.MAX_LIMIT);
+    const countPage = Math.ceil(count / CONST.MAX_LIMIT);
     if (parseInt(page) > countPage) {
       objErrors.errors.page = getError('page', 'this page number is not exist');
-      return res.status(404).json(ErrorFormatter(objErrors));
+      return res.status(HTTP_CODE.NOT_FOUND).json(ErrorFormatter(objErrors));
     }
-    Article.find({},null,{limit: +limit, skip: CONST.APP_CONST.MAX_LIMIT * (page - 1)}).sort({_id: -1})
+    Article.find({},null,{limit: +limit, skip: CONST.MAX_LIMIT * (page - 1)}).sort({_id: -1})
       .then(articles => {
-        return res.status(200).send({
+        return res.status(HTTP_CODE.OK).send({
           count,
           page,
           limit: articles.length,
           articles
         });
       })
-      .catch(err => res.status(500).send(err));
+      .catch(err => res.status(HTTP_CODE.SERVER_ERROR).send(err));
   })
 };

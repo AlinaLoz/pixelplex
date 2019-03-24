@@ -1,4 +1,5 @@
-const PATH = 'http://localhost:8000/api/v1';
+import {APP_CONST} from "../constans";
+const ARTICLE = APP_CONST.URL_PREFIX + APP_CONST.ARTICLE_URL;
 
 class Xhr {
   defaultData = {
@@ -33,7 +34,7 @@ class Xhr {
 
     const sendData = Object.keys(filterParams).map(key => `${key}=${params[key]}`);
 
-    return fetch(`${PATH}${url}?${sendData.join('&')}`, this.defaultData.optionsGet)
+    return fetch(`${APP_CONST.HOST_SERVER}${url}?${sendData.join('&')}`, this.defaultData.optionsGet)
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           return response.json();
@@ -43,7 +44,7 @@ class Xhr {
   }
 
   post(url, body) {
-    return fetch(`${PATH}${url}`, {...this.defaultData.optionsPost, body: JSON.stringify(body)})
+    return fetch(`${APP_CONST.HOST_SERVER}${url}`, {...this.defaultData.optionsPost, body: JSON.stringify(body)})
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           return response.json();
@@ -54,7 +55,7 @@ class Xhr {
   }
 
   put(url, body) {
-    return fetch(`${PATH}${url}`, {...this.defaultData.optionsPut, body: JSON.stringify(body)})
+    return fetch(`${APP_CONST.HOST_SERVER}${url}`, {...this.defaultData.optionsPut, body: JSON.stringify(body)})
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           return response.json();
@@ -65,22 +66,22 @@ class Xhr {
 
   static getArticles(page, limit) {
     const xhr = new Xhr();
-    return xhr.get('/articles/', {page, limit});
+    return xhr.get(ARTICLE, {page, limit});
   }
 
   static createArticle(title, body) {
     const xhr = new Xhr();
-    return xhr.post('/articles', {title, body});
+    return xhr.post(ARTICLE, {title, body});
   }
 
   static getOneArticle(id) {
     const xhr = new Xhr();
-    return xhr.get(`/articles/${id}`, {});
+    return xhr.get(`${ARTICLE}/${id}`, {});
   }
 
   static updateArticle(id, title, body) {
     const xhr = new Xhr();
-    return xhr.put(`/articles/${id}`, {title, body});
+    return xhr.put(`${ARTICLE}/${id}`, {title, body});
   }
 
 }

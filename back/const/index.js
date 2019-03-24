@@ -1,3 +1,10 @@
 exports.APP_CONST = {
-  MAX_LIMIT: 10
+  MAX_LIMIT: 10,
+  HTTP_CODE: {
+    OK: 200,
+    CREATED: 201,
+    NOT_FOUND: 404,
+    UNPROCESSABLE_INTITY: 422,
+    SERVER_ERROR: 500,
+  }
 };
