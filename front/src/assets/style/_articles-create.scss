@@ -1,0 +1,20 @@
+.articles-create {
+  width: 50%;
+  margin-left: 200px;
+
+  form {
+    width: 500px;
+
+    textarea {
+      resize: none;
+    }
+  }
+
+  .buttons {
+    button {
+      &:first-child {
+        margin-right: 20px;
+      }
+    }
+  }
+}

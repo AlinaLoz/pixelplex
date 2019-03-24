@@ -1,5 +1,6 @@
+const {ErrorFormatter, getError} = require("../lib/error");
 const CONST = require("../const");
-const {validLimit, validPage, getError} = require("../lib/validNumber");
+const {validLimit, validPage} = require("../lib/validNumber");
 const Article = require('../models/article');
 
 exports.post = function (req, res) {
@@ -72,28 +73,13 @@ exports.getAll = async function (req, res) {
     }
     Article.find({},null,{limit: +limit, skip: CONST.APP_CONST.MAX_LIMIT * (page - 1)}).sort({_id: -1})
       .then(articles => {
-        return res.status(200).send(articles);
+        return res.status(200).send({
+          count,
+          page,
+          limit,
+          articles
+        });
       })
       .catch(err => res.status(500).send(err));
   })
 };
-
-function ErrorFormatter(obj) {
-  if (obj.name === 'ValidationError') {
-    return {errors: Object.keys(obj.errors).map(key => {
-        return {
-          field: key,
-          error: obj.errors[key].message.split(' ').slice(1).join(' ')
-        }
-      })};
-  }
-  if (obj.name === 'CastError') {
-    return {
-      errors: [{
-        field: obj.path,
-        error: "Not Found"
-      }]
-    }
-  }
-}
-

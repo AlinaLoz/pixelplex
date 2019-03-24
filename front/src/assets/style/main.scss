@@ -1,0 +1,18 @@
+@import "variable";
+@import "header";
+@import "articles";
+@import "articles-create";
+@import "button";
+@import "breadcrumb";
+@import "pagination";
+@import "modal";
+
+* {
+ margin: 0;
+}
+
+main {
+ width : 80%;
+ margin: 15px auto;
+}
+

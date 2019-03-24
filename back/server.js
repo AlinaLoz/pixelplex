@@ -4,7 +4,7 @@ const cors = require('express-cors');
 const bodyParser = require("body-parser");
 const app = express();
 
-app.use(cors({allowedOrigins: [`${process.env.APP_HOST}:${process.env.CLIENT_PORT}`]}));
+app.use(cors({allowedOrigins: [`localhost:8081`]}));
 app.use(bodyParser.json());
 
 require('./routes')(app);
