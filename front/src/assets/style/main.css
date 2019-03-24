@@ -1,0 +1,77 @@
+header {
+  background: #424242;
+  padding: 10px 20px; }
+
+.articles__header {
+  display: flex;
+  justify-content: space-between; }
+.articles__table th, .articles__table td {
+  text-align: center; }
+.articles__table .buttons {
+  padding: 5px 10px; }
+.articles__table .btn {
+  border-radius: 50%;
+  padding: 5px 18px; }
+  .articles__table .btn.edit {
+    margin-right: 10px; }
+.articles__pagination {
+  display: flex;
+  justify-content: center; }
+  .articles__pagination .page-link {
+    padding: 0;
+    color: #212528;
+    border: none; }
+
+.articles-create {
+  width: 50%;
+  margin-left: 200px; }
+  .articles-create form {
+    width: 500px; }
+    .articles-create form textarea {
+      resize: none; }
+  .articles-create .buttons button:first-child {
+    margin-right: 20px; }
+
+.btn {
+  height: 40px;
+  padding: 5px 35px;
+  font-size: 16px;
+  background: white;
+  color: #212529; }
+
+.breadcrumb {
+  background: none;
+  padding-left: 0; }
+  .breadcrumb-item a {
+    color: #212529; }
+  .breadcrumb-item a, .breadcrumb-item span {
+    font-size: 1.5rem;
+    font-weight: 500; }
+
+.pagination .page-item.active .page-link {
+  color: white;
+  background: #343a40;
+  margin: 0 5px; }
+  .pagination .page-item.active .page-link:hover {
+    color: white;
+    background: #343a40; }
+.pagination .page-item .page-link {
+  padding: 0 5px;
+  border-radius: 5px; }
+  .pagination .page-item .page-link:hover {
+    background: none;
+    color: #0056b3; }
+
+.modal-article .time {
+  font-size: 13px;
+  color: #0056b3;
+  white-space: nowrap; }
+
+* {
+  margin: 0; }
+
+main {
+  width: 80%;
+  margin: 15px auto; }
+
+/*# sourceMappingURL=main.css.map */
