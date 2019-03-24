@@ -19,7 +19,7 @@ const TableComponent = ({articles, showArticle, changeArticle}) => {
       </tr>
       </thead>
       <tbody>
-        {articles.map(info => (
+        {articles.filter(article => article).map(info => (
           <tr key={info._id}>
             <th>{info._id}</th>
             <th>{info.title}</th>
@@ -45,7 +45,7 @@ const PaginationComponent = ({count, active, history}) => {
 
   for (let i = 1; i <= lastIndex; i++) {
     items.push(
-      <Pagination.Item onClick={(e) => slideTable(e, i)} key={i} active={i == active}>
+      <Pagination.Item onClick={(e) => slideTable(e, i)} key={i} active={i == active || !active && i === 1}>
         {i}
       </Pagination.Item>
     );
@@ -75,14 +75,14 @@ class ArticlesComponent extends Component {
     const {onFetchArticles, articles} = this.props;
     const {page = '', limit = ''} = this.state;
 
-    if (!Object.keys(articles).length) {
+    if (!articles.length) {
       onFetchArticles(page, limit);
     }
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     const {onFetchArticles, articles, count} = nextProps;
-    const {page = '', limit = ''} = queryString.parse(nextProps.location.search);
+    const {page = '', limit = 10} = queryString.parse(nextProps.location.search);
 
     const currValues = queryString.parse(this.props.location.search);
     let currPage = currValues.page || "",
@@ -90,7 +90,8 @@ class ArticlesComponent extends Component {
 
     if (count === -1 || currPage != page || currLimit != limit) {
       this.setState({page, limit});
-      if (articles[page] == undefined || articles[page].length < limit) {
+      const index = articles.indexOf(undefined, (page - 1) * APP_CONST.MAX_LIMIT);
+      if (index > -1 && (index - (page - 1) * APP_CONST.MAX_LIMIT) < limit && index < count || articles.length <= (page - 1) * APP_CONST.MAX_LIMIT) {
         return onFetchArticles(page, limit);
       }
     }
@@ -124,7 +125,7 @@ class ArticlesComponent extends Component {
           <TableComponent
             changeArticle={this.changeArticle}
             showArticle={this.showArticle}
-            articles={articles[page] || []}/>
+            articles={articles.slice((page - 1) * APP_CONST.MAX_LIMIT, page * APP_CONST.MAX_LIMIT - 1)}/>
           <PaginationComponent history={this.props.history} count={count} active={page}/>
           {showingArticle && <ArticleModal handleClose={this.hideArticle} id={showingArticle._id} article={showingArticle}/>}
       </main>
@@ -134,7 +135,7 @@ class ArticlesComponent extends Component {
 
 export default withRouter(connect(
   state => ({
-    articles: state.articles.pages || [],
+    articles: state.articles.articles || [],
     count   : state.articles.count
   }),
   dispatch => ({

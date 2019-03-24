@@ -24,7 +24,7 @@ exports.put = function (req, res) {
 
   Article.findById(id)
     .then(article => {
-      Article.findOneAndUpdate({_id: id}, {title, body}, { runValidators: true })
+      Article.findOneAndUpdate({_id: article._id}, {title, body}, { new: true, runValidators: true })
         .then(data => res.send(201, data))
         .catch(err => {
           if (err.name === 'ValidationError') {
@@ -76,7 +76,7 @@ exports.getAll = async function (req, res) {
         return res.status(200).send({
           count,
           page,
-          limit,
+          limit: articles.length,
           articles
         });
       })
